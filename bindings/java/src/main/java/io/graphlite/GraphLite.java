@@ -1,4 +1,4 @@
-package com.deepgraph.graphlite;
+package io.graphlite;
 
 import com.sun.jna.*;
 import com.sun.jna.ptr.IntByReference;
@@ -273,9 +273,9 @@ public class GraphLite implements Closeable {
     public static String version() {
         Pointer versionPtr = GraphLiteNative.INSTANCE.graphlite_version();
         if (versionPtr != null) {
-            String version = versionPtr.getString(0);
-            GraphLiteNative.INSTANCE.graphlite_free_string(versionPtr);
-            return version;
+            // graphlite_version returns a pointer to a static string that must NOT be freed.
+            // Freeing it causes undefined behavior (SIGBUS).
+            return versionPtr.getString(0);
         }
         return "unknown";
     }
